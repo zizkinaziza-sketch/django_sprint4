@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{% if post %}Редактирование поста{% else %}Создание поста{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h1>{% if post %}Редактирование поста{% else %}Создание поста{% endif %}</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    {% for field in form %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="alert alert-danger mt-1">
+            {{ field.errors }}
+          </div>
+        {% endif %}
+        {% if field.help_text %}
+          <small class="form-text text-muted">{{ field.help_text }}</small>
+        {% endif %}
+      </div>
+    {% endfor %}
+    
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    {% if post %}
+      <a href="{% url 'blog:post_detail' post.id %}" class="btn btn-secondary">Отмена</a>
+    {% else %}
+      <a href="{% url 'blog:index' %}" class="btn btn-secondary">Отмена</a>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

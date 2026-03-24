@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Блогикум{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <a href="{% url 'blog:index' %}">Лента записей</a>
+                <a href="{% url 'pages:about' %}">О проекте</a>
+                <a href="{% url 'pages:rules' %}">Наши правила</a>
+            </nav>
+        </header>
+        
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+        
+        <footer>
+            <p>© Блогикум</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <article>
+    <h1>{{ post.title }}</h1>
+    <p class="text-muted">
+      {{ post.pub_date|date:"d E Y" }} | 
+      От автора @{{ post.author.username }}
+      | Комментариев: ({{ post.comment_count|default:"0" }})
+    </p>
+    
+    {% if post.image %}
+      <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid mb-3" style="max-height: 400px;">
+    {% endif %}
+    
+    <p>{{ post.text|linebreaks }}</p>
+    
+    {% if user == post.author %}
+      <a href="{% url 'blog:edit_post' post.id %}" class="btn btn-secondary">Редактировать</a>
+      <a href="{% url 'blog:delete_post' post.id %}" class="btn btn-danger">Удалить</a>
+    {% endif %}
+  </article>
+  
+  <hr>
+  
+  <h3>Комментарии</h3>
+  
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'blog:add_comment' post.id %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <textarea name="text" class="form-control" rows="3" placeholder="Ваш комментарий..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+  {% else %}
+    <p><a href="{% url 'users:login' %}">Войдите</a> чтобы оставить комментарий.</p>
+  {% endif %}
+  
+  <div class="mt-4">
+    {% for comment in comments %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">
+            {{ comment.author.username }} | {{ comment.created_at|date:"d E Y H:i" }}
+          </h6>
+          <p class="card-text">{{ comment.text }}</p>
+          {% if user == comment.author %}
+            <a href="{% url 'blog:edit_comment' post.id comment.id %}" class="btn btn-sm btn-secondary">Редактировать</a>
+            <a href="{% url 'blog:delete_comment' post.id comment.id %}" class="btn btn-sm btn-danger">Удалить</a>
+          {% endif %}
+        </div>
+      </div>
+    {% empty %}
+      <p>Пока нет комментариев. Будьте первым!</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

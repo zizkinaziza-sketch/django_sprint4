@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль пользователя {{ profile.username }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h1>Профиль пользователя {{ profile.get_full_name|default:profile.username }}</h1>
+  <div class="mb-4">
+    <p><strong>Имя:</strong> {{ profile.first_name|default:"Не указано" }}</p>
+    <p><strong>Фамилия:</strong> {{ profile.last_name|default:"Не указано" }}</p>
+    <p><strong>Email:</strong> {{ profile.email|default:"Не указан" }}</p>
+    <p><strong>Логин:</strong> {{ profile.username }}</p>
+    
+    {% if user == profile %}
+      <a href="{% url 'users:profile_edit' profile.username %}" class="btn btn-secondary">Редактировать профиль</a>
+      <a href="{% url 'users:password_change' %}" class="btn btn-secondary">Изменить пароль</a>
+    {% endif %}
+  </div>
+  
+  <h2>Публикации пользователя</h2>
+  {% include "blog/post_list.html" with post_list=post_list %}
+</div>
+{% endblock %}
